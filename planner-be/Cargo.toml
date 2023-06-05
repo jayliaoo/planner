@@ -6,3 +6,18 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+axum = { version = "0.6.18", features = ["multipart"] }
+tower-http = { version = "0.4.0", features = ["cors", "fs", "validate-request", "auth"] }
+hyper = "0.14.26"
+tokio = { version = "1.0", features = ["full"] }
+tokio-util = { version = "0.7.8", features = ["io"] }
+http-body = "0.4.5"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0.96"
+diesel = { version = "2.0.4", features = ["time", "sqlite", "r2d2"] }
+time = { version = "0.3.21", features = ["serde", "formatting"] }
+dotenvy = "0.15"
+jsonwebtoken = { version = "8.3.0" }
+futures = "0.3.28"
+md-5 = "0.10.5"
+hex = "0.4.3"
