@@ -2,7 +2,8 @@
 CREATE TABLE IF NOT EXISTS `user`
 (
     `id`   INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-    `name` VARCHAR(50)                       NOT NULL
+    `name` VARCHAR(50)                       NOT NULL,
+    `role` VARCHAR(4)                        NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS `sprint`

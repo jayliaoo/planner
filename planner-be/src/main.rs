@@ -4,8 +4,10 @@ use axum::http::{HeaderValue, Method};
 use axum::Router;
 use axum::routing::{delete, get, post, put};
 use tower_http::cors::{AllowHeaders, AllowMethods, AllowOrigin, CorsLayer};
+use tower_http::validate_request::ValidateRequestHeaderLayer;
 
 use crate::handler::{sprint_handler, task_handler, user_handler};
+use crate::handler::jwt::{BaseJwt, Jwt};
 use crate::repository::get_connection_pool;
 use crate::repository::sprint_repository::SprintRepository;
 use crate::repository::task_repository::TaskRepository;
@@ -19,9 +21,12 @@ mod model;
 #[tokio::main]
 async fn main() {
     let pool = get_connection_pool();
-    let user_repository = Arc::new(UserRepository::new(&pool));
-    let sprint_repository = Arc::new(SprintRepository::new(&pool));
-    let task_repository = Arc::new(TaskRepository::new(&pool));
+    let user_repository = Arc::new(UserRepository::new(pool.clone()));
+    let sprint_repository = Arc::new(SprintRepository::new(pool.clone()));
+    let task_repository = Arc::new(TaskRepository::new(pool));
+    let base_jwt = BaseJwt::new("6d4f5439-e33a-45e1-b914-9bbe18ee7137".to_string());
+    let jwt_arc = Arc::new(base_jwt.clone());
+    let jwt = Jwt::new(base_jwt);
     let cors_layer = CorsLayer::new()
         .allow_headers(AllowHeaders::mirror_request())
         .allow_methods(AllowMethods::list([
@@ -36,7 +41,7 @@ async fn main() {
             HeaderValue::from_str("http://localhost:8080").unwrap(),
         ]));
     let app = Router::new()
-        .route("/login", post(user_handler::login))
+        .route("/login", post(user_handler::login).with_state(jwt_arc))
         .nest("/user", Router::new()
             .route("/", post(user_handler::add))
             .route("/", put(user_handler::edit))
@@ -58,7 +63,8 @@ async fn main() {
             .route("/:id", get(task_handler::get))
             .route("/list", get(task_handler::get_all))
             .with_state(task_repository))
-        .layer(cors_layer);
+        .layer(cors_layer)
+        .layer(ValidateRequestHeaderLayer::custom(jwt));
 
     axum::Server::bind(&"0.0.0.0:2345".parse().unwrap())
         .serve(app.into_make_service())

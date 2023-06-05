@@ -6,12 +6,12 @@ use crate::{schema::sprint::*, schema::sprint::dsl::sprint};
 use crate::model::entity::Sprint;
 use crate::model::param::AddSprintParam;
 
-pub(crate) struct SprintRepository<'a> {
-    pool: &'a Pool<ConnectionManager<SqliteConnection>>,
+pub(crate) struct SprintRepository {
+    pool: Pool<ConnectionManager<SqliteConnection>>,
 }
 
-impl<'a> SprintRepository<'a> {
-    pub(crate) fn new(pool: &Pool<ConnectionManager<SqliteConnection>>) -> Self {
+impl SprintRepository {
+    pub(crate) fn new(pool: Pool<ConnectionManager<SqliteConnection>>) -> Self {
         Self {
             pool,
         }

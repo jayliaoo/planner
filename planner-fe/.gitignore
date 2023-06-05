@@ -1,5 +1,3 @@
-target/
-
 .idea/
 *.iml
 
@@ -15,7 +13,7 @@ npm-debug.log
 yarn-error.log
 
 # Miscellaneous
-.angular/cache
+.angular/cache/
 .sass-cache/
 connect.lock
 coverage/

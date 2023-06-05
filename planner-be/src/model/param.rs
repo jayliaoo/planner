@@ -1,7 +1,7 @@
 use diesel::Insertable;
 use serde::Deserialize;
 
-use crate::{schema::sprint, schema::task};
+use crate::schema::{sprint, task, user};
 
 #[derive(Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -10,9 +10,11 @@ pub(crate) struct LoginParam {
     pub(crate) password: String,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Insertable)]
+#[diesel(table_name = user)]
 pub(crate) struct AddUserParam {
     pub(crate) name: String,
+    pub(crate) role: String,
 }
 
 #[derive(Deserialize, Debug, Insertable)]

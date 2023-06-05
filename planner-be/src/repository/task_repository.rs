@@ -6,12 +6,12 @@ use crate::{schema::task::*, schema::task::dsl::task};
 use crate::model::entity::Task;
 use crate::model::param::AddTaskParam;
 
-pub(crate) struct TaskRepository<'a> {
-    pool: &'a Pool<ConnectionManager<SqliteConnection>>,
+pub(crate) struct TaskRepository {
+    pool: Pool<ConnectionManager<SqliteConnection>>,
 }
 
-impl<'a> TaskRepository<'a> {
-    pub(crate) fn new(pool: &Pool<ConnectionManager<SqliteConnection>>) -> Self {
+impl TaskRepository {
+    pub(crate) fn new(pool:  Pool<ConnectionManager<SqliteConnection>>) -> Self {
         Self {
             pool
         }

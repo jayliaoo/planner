@@ -6,12 +6,12 @@ use crate::{schema::user::*, schema::user::dsl::user};
 use crate::model::entity::User;
 use crate::model::param::AddUserParam;
 
-pub(crate) struct UserRepository<'a> {
-    pool: &'a Pool<ConnectionManager<SqliteConnection>>,
+pub(crate) struct UserRepository {
+    pool: Pool<ConnectionManager<SqliteConnection>>,
 }
 
-impl<'a> UserRepository<'a> {
-    pub(crate) fn new(pool: &Pool<ConnectionManager<SqliteConnection>>) -> Self {
+impl<'a> UserRepository {
+    pub(crate) fn new(pool: Pool<ConnectionManager<SqliteConnection>>) -> Self {
         Self {
             pool
         }
@@ -19,7 +19,7 @@ impl<'a> UserRepository<'a> {
 
     pub(crate) fn insert(&self, param: &AddUserParam) -> QueryResult<i32> {
         self.pool.get().unwrap().transaction::<_, Error, _>(|conn| {
-            insert_into(user).values(name.eq(&param.name)).execute(conn)?;
+            insert_into(user).values(param).execute(conn)?;
             user.select(id).order(id.desc()).first(conn)
         })
     }

@@ -1,12 +1,15 @@
 use diesel::{AsChangeset, Queryable};
 use serde::{Deserialize, Serialize};
 
-use crate::schema::{sprint, task};
+use crate::schema::{sprint, task, user};
 
-#[derive(Queryable, Deserialize, Serialize)]
+#[derive(Queryable, Deserialize, Serialize, AsChangeset)]
+#[diesel(primary_key(id))]
+#[diesel(table_name = user)]
 pub(crate) struct User {
     pub(crate) id: i32,
     pub(crate) name: String,
+    pub(crate) role: String,
 }
 
 #[derive(Queryable, Deserialize, Serialize, AsChangeset)]
