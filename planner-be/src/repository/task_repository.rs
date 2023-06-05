@@ -17,26 +17,26 @@ impl<'a> TaskRepository<'a> {
         }
     }
 
-    pub(crate) fn insert(&mut self, param: &AddTaskParam) -> QueryResult<i32> {
+    pub(crate) fn insert(&self, param: &AddTaskParam) -> QueryResult<i32> {
         self.pool.get().unwrap().transaction::<_, Error, _>(|conn| {
             insert_into(task).values(param).execute(conn)?;
             task.select(id).order(id.desc()).first(conn)
         })
     }
 
-    pub(crate) fn update(&mut self, param: &Task) -> QueryResult<usize> {
+    pub(crate) fn update(&self, param: &Task) -> QueryResult<usize> {
         diesel::update(task).set(param).execute(&mut self.pool.get().unwrap())
     }
 
-    pub(crate) fn delete(&mut self, id_: i32) -> QueryResult<usize> {
+    pub(crate) fn delete(&self, id_: i32) -> QueryResult<usize> {
         diesel::delete(task).filter(id.eq(id_)).execute(&mut self.pool.get().unwrap())
     }
 
-    pub(crate) fn get(&mut self, id_: i32) -> QueryResult<Task> {
+    pub(crate) fn get(&self, id_: i32) -> QueryResult<Task> {
         task.filter(id.eq(id_)).get_result(&mut self.pool.get().unwrap())
     }
 
-    pub(crate) fn get_all(&mut self) -> QueryResult<Vec<Task>> {
+    pub(crate) fn get_all(&self) -> QueryResult<Vec<Task>> {
         task.get_results(&mut self.pool.get().unwrap())
     }
 }

@@ -17,26 +17,26 @@ impl<'a> UserRepository<'a> {
         }
     }
 
-    pub(crate) fn insert(&mut self, param: &AddUserParam) -> QueryResult<i32> {
+    pub(crate) fn insert(&self, param: &AddUserParam) -> QueryResult<i32> {
         self.pool.get().unwrap().transaction::<_, Error, _>(|conn| {
             insert_into(user).values(name.eq(&param.name)).execute(conn)?;
             user.select(id).order(id.desc()).first(conn)
         })
     }
 
-    pub(crate) fn update(&mut self, param: &User) -> QueryResult<usize> {
-        diesel::update(user).filter(id.eq(param.id)).set(name.eq(param.name)).execute(&mut self.pool.get().unwrap())
+    pub(crate) fn update(&self, param: &User) -> QueryResult<usize> {
+        diesel::update(user).filter(id.eq(param.id)).set(name.eq(&param.name)).execute(&mut self.pool.get().unwrap())
     }
 
-    pub(crate) fn delete(&mut self, id_: i32) -> QueryResult<usize> {
+    pub(crate) fn delete(&self, id_: i32) -> QueryResult<usize> {
         diesel::delete(user).filter(id.eq(id_)).execute(&mut self.pool.get().unwrap())
     }
 
-    pub(crate) fn get(&mut self, id_: i32) -> QueryResult<User> {
+    pub(crate) fn get(&self, id_: i32) -> QueryResult<User> {
         user.filter(id.eq(id_)).get_result(&mut self.pool.get().unwrap())
     }
 
-    pub(crate) fn get_all(&mut self) -> QueryResult<Vec<User>> {
+    pub(crate) fn get_all(&self) -> QueryResult<Vec<User>> {
         user.get_results(&mut self.pool.get().unwrap())
     }
 }

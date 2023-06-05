@@ -1,3 +1,6 @@
+use std::sync::Arc;
+
+use axum::extract::{Path, State};
 use axum::Json;
 
 use crate::model::entity::Sprint;
@@ -5,39 +8,27 @@ use crate::model::MyResult;
 use crate::model::param::AddSprintParam;
 use crate::repository::sprint_repository::SprintRepository;
 
-pub(crate) struct SprintHandler<'a> {
-    repository: SprintRepository<'a>,
+pub(crate) async fn add<'a>(State(repository): State<Arc<SprintRepository<'a>>>, Json(payload): Json<AddSprintParam>) -> Json<MyResult<i32>> {
+    let id = repository.insert(&payload).unwrap();
+    Json(MyResult::success(Some(id)))
 }
 
-impl<'a> SprintHandler<'a> {
-    pub(crate) fn new(repository: SprintRepository) -> Self {
-        Self {
-            repository
-        }
-    }
+pub(crate) async fn edit<'a>(State(repository): State<Arc<SprintRepository<'a>>>, Json(payload): Json<Sprint>) -> Json<MyResult<()>> {
+    repository.update(&payload).unwrap();
+    Json(MyResult::success(None))
+}
 
-    pub(crate) async fn add(&mut self, payload: &AddSprintParam) -> Json<MyResult<i32>> {
-        let id = self.repository.insert(payload).unwrap();
-        Json(MyResult::success(Some(id)))
-    }
+pub(crate) async fn delete<'a>(State(repository): State<Arc<SprintRepository<'a>>>, Path(id): Path<i32>) -> Json<MyResult<()>> {
+    repository.delete(id).unwrap();
+    Json(MyResult::success(None))
+}
 
-    pub(crate) async fn edit(&mut self, payload: &Sprint) -> Json<MyResult<()>> {
-        self.repository.update(payload).unwrap();
-        Json(MyResult::success(None))
-    }
+pub(crate) async fn get<'a>(State(repository): State<Arc<SprintRepository<'a>>>, Path(id): Path<i32>) -> Json<MyResult<Sprint>> {
+    let sprint = repository.get(id).unwrap();
+    Json(MyResult::success(Some(sprint)))
+}
 
-    pub(crate) async fn delete(&mut self, id: i32) -> Json<MyResult<()>> {
-        self.repository.delete(id).unwrap();
-        Json(MyResult::success(None))
-    }
-
-    pub(crate) async fn get(&mut self, id: i32) -> Json<MyResult<Sprint>> {
-        let sprint = self.repository.get(id).unwrap();
-        Json(MyResult::success(Some(sprint)))
-    }
-
-    pub(crate) async fn get_all(&mut self) -> Json<MyResult<Vec<Sprint>>> {
-        let sprints = self.repository.get_all().unwrap();
-        Json(MyResult::success(Some(sprints)))
-    }
+pub(crate) async fn get_all<'a>(State(repository): State<Arc<SprintRepository<'a>>>) -> Json<MyResult<Vec<Sprint>>> {
+    let sprints = repository.get_all().unwrap();
+    Json(MyResult::success(Some(sprints)))
 }
