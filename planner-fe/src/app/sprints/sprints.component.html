@@ -1,0 +1,36 @@
+<a nz-button nzType="primary" href="/sprint/add">Add</a>
+<nz-table #editRowTable nzBordered [nzData]="(listOfData)" nzTableLayout="fixed" nzShowPagination="false">
+  <thead>
+  <tr>
+    <th nzWidth="20%">ID</th>
+    <th nzWidth="20%">Name</th>
+    <th nzWidth="20%">Start</th>
+    <th nzWidth="20%">End</th>
+    <th>Action</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let data of editRowTable.data">
+    <ng-container *ngIf="!editCache[data.id.toString()].edit; else editTemplate">
+      <td>{{ data.id }}</td>
+      <td>{{ data.name }}</td>
+      <td>{{ data.start }}</td>
+      <td>{{ data.end }}</td>
+      <td>
+        <a nz-button nzType="link" nzSize="small" (click)="startEdit(data.id)">Edit</a>
+        <a nz-button nzType="link" nzSize="small" (click)="delete(data.id)">Delete</a>
+      </td>
+    </ng-container>
+    <ng-template #editTemplate>
+      <td>{{ data.id }}</td>
+      <td><input type="text" nz-input [(ngModel)]="editCache[data.id.toString()].data.name"/></td>
+      <td><nz-date-picker [(ngModel)]="editCache[data.id.toString()].data.start" nzShowToday="false"></nz-date-picker></td>
+      <td><nz-date-picker [(ngModel)]="editCache[data.id.toString()].data.end" nzShowToday="false"></nz-date-picker></td>
+      <td>
+        <a nz-button nzType="link" nzSize="small"  (click)="saveEdit(data.id)">Save</a>
+        <a nz-popconfirm nzPopconfirmTitle="Sure to cancel?" (nzOnConfirm)="cancelEdit(data.id)">Cancel</a>
+      </td>
+    </ng-template>
+  </tr>
+  </tbody>
+</nz-table>

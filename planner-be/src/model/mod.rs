@@ -10,7 +10,6 @@ pub(crate) struct Claims {
 }
 
 #[derive(Serialize)]
-#[serde(rename_all = "camelCase")]
 pub(crate) struct PageResult<T> {
     pub(crate) total_count: i64,
     pub(crate) list: Vec<T>,
@@ -18,7 +17,6 @@ pub(crate) struct PageResult<T> {
 
 
 #[derive(Serialize)]
-#[serde(rename_all = "camelCase")]
 pub(crate) struct MyResult<T> {
     pub(crate) result_code: i32,
     pub(crate) message: String,

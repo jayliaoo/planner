@@ -25,7 +25,7 @@ impl TaskRepository {
     }
 
     pub(crate) fn update(&self, param: &Task) -> QueryResult<usize> {
-        diesel::update(task).set(param).execute(&mut self.pool.get().unwrap())
+        diesel::update(param).set(param).execute(&mut self.pool.get().unwrap())
     }
 
     pub(crate) fn delete(&self, id_: i32) -> QueryResult<usize> {

@@ -1,0 +1,43 @@
+<a nz-button nzType="primary" href="/user/add">Add</a>
+<nz-table #editRowTable nzBordered [nzData]="(listOfData)" nzTableLayout="fixed" nzShowPagination="false">
+  <thead>
+  <tr>
+    <th nzWidth="25%">ID</th>
+    <th nzWidth="25%">Name</th>
+    <th nzWidth="25%">Role</th>
+    <th>Action</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let data of editRowTable.data">
+    <ng-container *ngIf="!editCache[data.id.toString()].edit; else editTemplate">
+      <td>{{ data.id }}</td>
+      <td>{{ data.name }}</td>
+      <td>
+        <nz-select [ngModel]="data.role" nzSize="large" nzBorderless="true" disabled>
+          <nz-option nzValue="dev" nzLabel="Developer"></nz-option>
+          <nz-option nzValue="test" nzLabel="Test engineer"></nz-option>
+        </nz-select>
+      </td>
+      <td>
+        <a nz-button nzType="link" nzSize="small" (click)="startEdit(data.id)">Edit</a>
+        <a nz-button nzType="link" nzSize="small" (click)="delete(data.id)">Delete</a>
+      </td>
+    </ng-container>
+    <ng-template #editTemplate>
+      <td>{{ data.id }}</td>
+      <td><input type="text" nz-input [(ngModel)]="editCache[data.id.toString()].data.name"/></td>
+      <td>
+        <nz-select [(ngModel)]="editCache[data.id.toString()].data.role" nzSize="large">
+          <nz-option nzValue="dev" nzLabel="Developer"></nz-option>
+          <nz-option nzValue="test" nzLabel="Test engineer"></nz-option>
+        </nz-select>
+      </td>
+      <td>
+        <a (click)="saveEdit(data.id)" class="save">Save</a>
+        <a nz-popconfirm nzPopconfirmTitle="Sure to cancel?" (nzOnConfirm)="cancelEdit(data.id)">Cancel</a>
+      </td>
+    </ng-template>
+  </tr>
+  </tbody>
+</nz-table>

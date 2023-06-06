@@ -17,6 +17,11 @@ pub(crate) struct AddUserParam {
     pub(crate) role: String,
 }
 
+#[derive(Deserialize, Debug)]
+pub(crate) struct UserListParam {
+    pub(crate) role: Option<String>,
+}
+
 #[derive(Deserialize, Debug, Insertable)]
 #[diesel(table_name = sprint)]
 pub(crate) struct AddSprintParam {

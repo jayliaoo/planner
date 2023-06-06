@@ -4,7 +4,7 @@ use diesel::result::Error;
 
 use crate::{schema::user::*, schema::user::dsl::user};
 use crate::model::entity::User;
-use crate::model::param::AddUserParam;
+use crate::model::param::{AddUserParam, UserListParam};
 
 pub(crate) struct UserRepository {
     pool: Pool<ConnectionManager<SqliteConnection>>,
@@ -25,7 +25,7 @@ impl<'a> UserRepository {
     }
 
     pub(crate) fn update(&self, param: &User) -> QueryResult<usize> {
-        diesel::update(user).filter(id.eq(param.id)).set(name.eq(&param.name)).execute(&mut self.pool.get().unwrap())
+        diesel::update(param).set(param).execute(&mut self.pool.get().unwrap())
     }
 
     pub(crate) fn delete(&self, id_: i32) -> QueryResult<usize> {
@@ -36,8 +36,11 @@ impl<'a> UserRepository {
         user.filter(id.eq(id_)).get_result(&mut self.pool.get().unwrap())
     }
 
-    pub(crate) fn get_all(&self) -> QueryResult<Vec<User>> {
-        user.get_results(&mut self.pool.get().unwrap())
+    pub(crate) fn get_list(&self, param: UserListParam) -> QueryResult<Vec<User>> {
+        if let Some(role_) = param.role {
+            user.filter(role.eq(role_)).get_results(&mut self.pool.get().unwrap())
+        } else {
+            user.get_results(&mut self.pool.get().unwrap())
+        }
     }
 }
-

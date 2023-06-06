@@ -1,9 +1,11 @@
 use std::marker::PhantomData;
 
 use axum::http::HeaderValue;
+use errors::Error;
 use http_body::Body;
 use hyper::{header, Request, Response, StatusCode};
-use jsonwebtoken::{decode, DecodingKey, encode, EncodingKey, Header, TokenData, Validation};
+use jsonwebtoken::{decode, DecodingKey, encode, EncodingKey, errors, Header, TokenData, Validation};
+use jsonwebtoken::errors::ErrorKind;
 use time::{Duration, OffsetDateTime};
 use tower_http::validate_request::ValidateRequest;
 
@@ -22,9 +24,11 @@ impl BaseJwt {
         }
     }
 
-    fn verify(&self, header: &HeaderValue) -> jsonwebtoken::errors::Result<TokenData<Claims>> {
-        let token = header.to_str().unwrap();
-        decode::<Claims>(token, &self.decoding_key, &Validation::default())
+    fn verify(&self, header: &HeaderValue) -> errors::Result<TokenData<Claims>> {
+        match header.to_str().unwrap().strip_prefix("Bearer ") {
+            Some(token) => decode::<Claims>(token, &self.decoding_key, &Validation::default()),
+            None => Err(Error::from(ErrorKind::InvalidToken)),
+        }
     }
 
     pub(crate) fn new_token(&self) -> String {

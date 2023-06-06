@@ -1,9 +1,9 @@
-use diesel::{AsChangeset, Queryable};
+use diesel::{AsChangeset, Identifiable, Queryable};
 use serde::{Deserialize, Serialize};
 
 use crate::schema::{sprint, task, user};
 
-#[derive(Queryable, Deserialize, Serialize, AsChangeset)]
+#[derive(Queryable, Deserialize, Serialize, AsChangeset, Identifiable)]
 #[diesel(primary_key(id))]
 #[diesel(table_name = user)]
 pub(crate) struct User {
@@ -12,8 +12,7 @@ pub(crate) struct User {
     pub(crate) role: String,
 }
 
-#[derive(Queryable, Deserialize, Serialize, AsChangeset)]
-#[diesel(primary_key(id))]
+#[derive(Queryable, Deserialize, Serialize, AsChangeset, Identifiable)]
 #[diesel(table_name = sprint)]
 pub(crate) struct Sprint {
     pub(crate) id: i32,
@@ -22,8 +21,7 @@ pub(crate) struct Sprint {
     pub(crate) end: String,
 }
 
-#[derive(Queryable, Deserialize, Serialize, AsChangeset)]
-#[diesel(primary_key(id))]
+#[derive(Queryable, Deserialize, Serialize, AsChangeset, Identifiable)]
 #[diesel(table_name = task)]
 pub(crate) struct Task {
     pub(crate) id: i32,
