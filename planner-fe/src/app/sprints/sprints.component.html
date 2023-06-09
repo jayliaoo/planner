@@ -17,6 +17,7 @@
       <td>{{ data.start }}</td>
       <td>{{ data.end }}</td>
       <td>
+        <a nz-button nzType="link" nzSize="small" [href]="'/sprint/detail/'+data.id">Detail</a>
         <a nz-button nzType="link" nzSize="small" (click)="startEdit(data.id)">Edit</a>
         <a nz-button nzType="link" nzSize="small" (click)="delete(data.id)">Delete</a>
       </td>

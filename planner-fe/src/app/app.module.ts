@@ -25,6 +25,13 @@ import {NzSelectModule} from "ng-zorro-antd/select";
 import {SprintsComponent} from "./sprints/sprints.component";
 import {SprintAddComponent} from "./sprint-add/sprint-add.component";
 import {NzDatePickerModule} from "ng-zorro-antd/date-picker";
+import {SprintDetailComponent} from "./sprint-detail/sprint-detail.component";
+import {TaskAddComponent} from "./task-add/task-add.component";
+import {NzInputNumberModule} from "ng-zorro-antd/input-number";
+import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions'
+import { NzBadgeModule } from 'ng-zorro-antd/badge'
+import { NzDividerModule } from 'ng-zorro-antd/divider'
+import { NgxGanttModule } from '@worktile/gantt'
 
 registerLocaleData(en);
 
@@ -36,6 +43,8 @@ registerLocaleData(en);
     UserAddComponent,
     SprintsComponent,
     SprintAddComponent,
+    SprintDetailComponent,
+    TaskAddComponent,
   ],
   imports: [
     BrowserModule,
@@ -55,7 +64,12 @@ registerLocaleData(en);
     NzPopconfirmModule,
     NzSelectModule,
     NgOptimizedImage,
-    NzDatePickerModule
+    NzDatePickerModule,
+    NzInputNumberModule,
+    NzDescriptionsModule,
+    NzBadgeModule,
+    NzDividerModule,
+    NgxGanttModule,
   ],
   providers: [
     {provide: NZ_I18N, useValue: en_US}

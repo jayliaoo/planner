@@ -42,6 +42,6 @@ pub(crate) async fn get(State(repository): State<Arc<UserRepository>>, Path(id):
 }
 
 pub(crate) async fn get_list(State(repository): State<Arc<UserRepository>>, Query(param):Query<UserListParam>) -> Json<MyResult<Vec<User>>> {
-    let users = repository.get_list(param).unwrap();
+    let users = repository.get_list(&param).unwrap();
     Json(MyResult::success(Some(users)))
 }

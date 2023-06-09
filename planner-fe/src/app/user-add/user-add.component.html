@@ -9,7 +9,10 @@
   <nz-form-item>
     <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="role" nzRequired>Role</nz-form-label>
     <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please input your role!">
-      <input nz-input id="role" formControlName="role" placeholder="only allow dev or test"/>
+      <nz-select formControlName="role">
+        <nz-option nzValue="dev" nzLabel="Developer"></nz-option>
+        <nz-option nzValue="test" nzLabel="Test engineer"></nz-option>
+      </nz-select>
     </nz-form-control>
   </nz-form-item>
 

@@ -3,7 +3,7 @@ import {HttpClient} from "@angular/common/http";
 import {environment} from "../../environments/environment";
 import {Result} from "../common";
 
-interface Sprint {
+export interface Sprint {
   id: number;
   name: string;
   start: string | Date;

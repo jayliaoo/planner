@@ -36,11 +36,14 @@ impl<'a> UserRepository {
         user.filter(id.eq(id_)).get_result(&mut self.pool.get().unwrap())
     }
 
-    pub(crate) fn get_list(&self, param: UserListParam) -> QueryResult<Vec<User>> {
-        if let Some(role_) = param.role {
-            user.filter(role.eq(role_)).get_results(&mut self.pool.get().unwrap())
-        } else {
-            user.get_results(&mut self.pool.get().unwrap())
+    pub(crate) fn get_list(&self, param: &UserListParam) -> QueryResult<Vec<User>> {
+        let mut query = table.into_boxed();
+        if let Some(ids) = &param.ids {
+            query = query.filter(id.eq_any(ids));
         }
+        if let Some(role_) = &param.role {
+            query = query.filter(role.eq(role_));
+        }
+        query.get_results(&mut self.pool.get().unwrap())
     }
 }

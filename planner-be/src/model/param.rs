@@ -19,7 +19,20 @@ pub(crate) struct AddUserParam {
 
 #[derive(Deserialize, Debug)]
 pub(crate) struct UserListParam {
+    pub(crate) ids: Option<Vec<i32>>,
     pub(crate) role: Option<String>,
+}
+
+#[derive(Deserialize, Debug)]
+pub(crate) struct SprintListParam {
+    pub(crate) ids: Option<Vec<i32>>,
+}
+
+#[derive(Deserialize, Debug)]
+pub(crate) struct TaskListParam {
+    pub(crate) sprint: Option<i32>,
+    pub(crate) desc: Option<bool>,
+    pub(crate) limit: Option<i64>,
 }
 
 #[derive(Deserialize, Debug, Insertable)]

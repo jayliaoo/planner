@@ -3,6 +3,7 @@ use serde::Serialize;
 
 pub(crate) mod param;
 pub(crate) mod entity;
+pub(crate) mod vo;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub(crate) struct Claims {

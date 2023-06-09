@@ -1,34 +1,50 @@
 use std::sync::Arc;
 
-use axum::extract::{Path, State};
+use axum::extract::{Path, Query, State};
 use axum::Json;
 
 use crate::model::entity::Task;
+use crate::model::param::{AddTaskParam, TaskListParam};
+use crate::model::vo::TaskVo;
 use crate::model::MyResult;
-use crate::model::param::AddTaskParam;
-use crate::repository::task_repository::TaskRepository;
+use crate::service::task_service::TaskService;
 
-pub(crate) async fn add<'a>(State(repository): State<Arc<TaskRepository>>, Json(payload): Json<AddTaskParam>) -> Json<MyResult<i32>> {
-    let id = repository.insert(&payload).unwrap();
+pub(crate) async fn add(
+    State(service): State<Arc<TaskService>>,
+    Json(mut payload): Json<AddTaskParam>,
+) -> Json<MyResult<i32>> {
+    let id = service.add(&mut payload);
     Json(MyResult::success(Some(id)))
 }
 
-pub(crate) async fn edit<'a>(State(repository): State<Arc<TaskRepository>>, Json(payload): Json<Task>) -> Json<MyResult<()>> {
-    repository.update(&payload).unwrap();
+pub(crate) async fn edit(
+    State(service): State<Arc<TaskService>>,
+    Json(payload): Json<Task>,
+) -> Json<MyResult<()>> {
+    service.edit(&payload);
     Json(MyResult::success(None))
 }
 
-pub(crate) async fn delete<'a>(State(repository): State<Arc<TaskRepository>>, Path(id): Path<i32>) -> Json<MyResult<()>> {
-    repository.delete(id).unwrap();
+pub(crate) async fn delete(
+    State(service): State<Arc<TaskService>>,
+    Path(id): Path<i32>,
+) -> Json<MyResult<()>> {
+    service.delete(id);
     Json(MyResult::success(None))
 }
 
-pub(crate) async fn get<'a>(State(repository): State<Arc<TaskRepository>>, Path(id): Path<i32>) -> Json<MyResult<Task>> {
-    let task = repository.get(id).unwrap();
+pub(crate) async fn get(
+    State(service): State<Arc<TaskService>>,
+    Path(id): Path<i32>,
+) -> Json<MyResult<Task>> {
+    let task = service.get(id);
     Json(MyResult::success(Some(task)))
 }
 
-pub(crate) async fn get_all<'a>(State(repository): State<Arc<TaskRepository>>) -> Json<MyResult<Vec<Task>>> {
-    let tasks = repository.get_all().unwrap();
+pub(crate) async fn get_list(
+    State(service): State<Arc<TaskService>>,
+    Query(param): Query<TaskListParam>,
+) -> Json<MyResult<Vec<TaskVo>>> {
+    let tasks = service.get_list(&param);
     Json(MyResult::success(Some(tasks)))
 }

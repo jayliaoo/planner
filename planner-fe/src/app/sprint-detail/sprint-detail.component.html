@@ -1,0 +1,48 @@
+<nz-descriptions nzTitle="Sprint Info" nzBordered [nzColumn]="2">
+  <nz-descriptions-item nzTitle="ID">{{sprint?.id}}</nz-descriptions-item>
+  <nz-descriptions-item nzTitle="Name">{{sprint?.name}}</nz-descriptions-item>
+  <nz-descriptions-item nzTitle="Start">{{sprint?.start}}</nz-descriptions-item>
+  <nz-descriptions-item nzTitle="Start">{{sprint?.end}}</nz-descriptions-item>
+</nz-descriptions>
+
+<nz-divider></nz-divider>
+
+<h2>Tasks</h2>
+<a nz-button nzType="primary" nzGhost="true" href="/task/add">Add</a>
+<nz-table #editRowTable nzBordered [nzData]="(listOfData)" nzTableLayout="fixed" nzShowPagination="false"
+          nzSize="small">
+  <thead>
+  <tr>
+    <th>ID</th>
+    <th>Name</th>
+    <th>Sprint</th>
+    <th>Developer</th>
+    <th>Story Point</th>
+    <th>Tester</th>
+    <th>Test Story Point</th>
+    <th>Action</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let data of editRowTable.data">
+    <td>{{ data.id }}</td>
+    <td>{{ data.name }}</td>
+    <td>{{ data.sprint_name }}</td>
+    <td>{{ data.developer_name }}</td>
+    <td>{{ data.sp }}</td>
+    <td>{{ data.tester_name }}</td>
+    <td>{{ data.test_sp }}</td>
+    <td>
+      <a nz-button nzType="link" nzSize="small" (click)="startEdit(data.id)">Edit</a>
+      <a nz-button nzType="link" nzSize="small" (click)="delete(data.id)">Delete</a>
+    </td>
+  </tr>
+  </tbody>
+</nz-table>
+<ngx-gantt #gantt [items]="[]">
+  <ngx-gantt-table>
+    <ngx-gantt-column name="Title" width="300px">
+      <ng-template #cell let-item="item"> {{ item.title }} </ng-template>
+    </ngx-gantt-column>
+  </ngx-gantt-table>
+</ngx-gantt>
