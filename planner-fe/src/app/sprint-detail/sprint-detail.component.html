@@ -39,9 +39,12 @@
   </tr>
   </tbody>
 </nz-table>
+
+<nz-divider></nz-divider>
+
 <ngx-gantt #gantt [items]="[]">
   <ngx-gantt-table>
-    <ngx-gantt-column name="Title" width="300px">
+    <ngx-gantt-column name="Title" width="200px">
       <ng-template #cell let-item="item"> {{ item.title }} </ng-template>
     </ngx-gantt-column>
   </ngx-gantt-table>
