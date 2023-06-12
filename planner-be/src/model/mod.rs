@@ -1,21 +1,19 @@
-use serde::Deserialize;
 use serde::Serialize;
 
-pub(crate) mod param;
 pub(crate) mod entity;
+pub(crate) mod param;
 pub(crate) mod vo;
 
-#[derive(Debug, Serialize, Deserialize)]
-pub(crate) struct Claims {
-    pub(crate) exp: usize,
-}
+// #[derive(Debug, Serialize, Deserialize)]
+// pub(crate) struct Claims {
+//     pub(crate) exp: usize,
+// }
 
 #[derive(Serialize)]
 pub(crate) struct PageResult<T> {
     pub(crate) total_count: i64,
     pub(crate) list: Vec<T>,
 }
-
 
 #[derive(Serialize)]
 pub(crate) struct MyResult<T> {

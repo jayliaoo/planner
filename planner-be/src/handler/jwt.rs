@@ -1,51 +1,43 @@
 use std::marker::PhantomData;
 
 use axum::http::HeaderValue;
-use errors::Error;
 use http_body::Body;
 use hyper::{header, Request, Response, StatusCode};
-use jsonwebtoken::{decode, DecodingKey, encode, EncodingKey, errors, Header, TokenData, Validation};
-use jsonwebtoken::errors::ErrorKind;
-use time::{Duration, OffsetDateTime};
+use jwt_simple::prelude::*;
+use jwt_simple::Error;
 use tower_http::validate_request::ValidateRequest;
 
-use crate::model::Claims;
-
 pub(crate) struct BaseJwt {
-    decoding_key: DecodingKey,
-    encoding_key: EncodingKey,
+    key: HS256Key,
 }
 
 impl BaseJwt {
     pub(crate) fn new(secret: String) -> Self {
         Self {
-            decoding_key: DecodingKey::from_secret(secret.as_ref()),
-            encoding_key: EncodingKey::from_secret(secret.as_ref()),
+            key: HS256Key::from_bytes(secret.as_bytes()),
         }
     }
 
-    fn verify(&self, header: &HeaderValue) -> errors::Result<TokenData<Claims>> {
+    fn verify(&self, header: &HeaderValue) -> Result<JWTClaims<NoCustomClaims>, Error> {
         match header.to_str().unwrap().strip_prefix("Bearer ") {
-            Some(token) => decode::<Claims>(token, &self.decoding_key, &Validation::default()),
-            None => Err(Error::from(ErrorKind::InvalidToken)),
+            Some(token) => self.key.verify_token::<NoCustomClaims>(&token, None),
+            None => Err(Error::msg("The token is not present.")),
         }
     }
 
     pub(crate) fn new_token(&self) -> String {
-        let exp = ((OffsetDateTime::now_utc() + Duration::days(1)).unix_timestamp()) as usize;
-        encode(&Header::default(), &Claims { exp }, &self.encoding_key).unwrap()
+        let claims = Claims::create(Duration::from_days(1));
+        self.key.authenticate(claims).unwrap()
     }
 }
 
 impl Clone for BaseJwt {
     fn clone(&self) -> Self {
         Self {
-            decoding_key: self.decoding_key.clone(),
-            encoding_key: self.encoding_key.clone(),
+            key: self.key.clone(),
         }
     }
 }
-
 
 pub(crate) struct Jwt<ResBody> {
     jwt: BaseJwt,
@@ -70,20 +62,17 @@ impl<ResBody> Clone for Jwt<ResBody> {
     }
 }
 
-
 impl<B, ResBody: Body + Default> ValidateRequest<B> for Jwt<ResBody> {
     type ResponseBody = ResBody;
 
     fn validate(&mut self, request: &mut Request<B>) -> Result<(), Response<Self::ResponseBody>> {
         match request.headers().get(header::AUTHORIZATION) {
-            Some(actual) => {
-                match self.jwt.verify(actual) {
-                    Ok(_) => Ok(()),
-                    _ => {
-                        let mut res = Response::new(ResBody::default());
-                        *res.status_mut() = StatusCode::UNAUTHORIZED;
-                        Err(res)
-                    },
+            Some(actual) => match self.jwt.verify(actual) {
+                Ok(_) => Ok(()),
+                _ => {
+                    let mut res = Response::new(ResBody::default());
+                    *res.status_mut() = StatusCode::UNAUTHORIZED;
+                    Err(res)
                 }
             },
             _ => {

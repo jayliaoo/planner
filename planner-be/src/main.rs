@@ -1,6 +1,7 @@
 use std::sync::Arc;
 
 use axum::http::{HeaderValue, Method};
+use axum::response::Html;
 use axum::routing::{delete, get, post, put};
 use axum::Router;
 use tower_http::cors::{AllowHeaders, AllowMethods, AllowOrigin, CorsLayer};
@@ -49,6 +50,7 @@ async fn main() {
         .unwrap()]));
     let app = Router::new()
         .route("/login", post(user_handler::login).with_state(jwt_arc))
+        .route("/index", get(|| async { Html("Hello World!") }))
         .nest(
             "",
             Router::new()
@@ -86,7 +88,7 @@ async fn main() {
         )
         .layer(cors_layer);
 
-    axum::Server::bind(&"0.0.0.0:2345".parse().unwrap())
+    axum::Server::bind(&"0.0.0.0:3500".parse().unwrap())
         .serve(app.into_make_service())
         .await
         .unwrap();
