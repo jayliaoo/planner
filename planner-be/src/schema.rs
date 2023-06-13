@@ -2,8 +2,9 @@
 
 diesel::table! {
     sprint (id) {
-        id -> Integer,
-        name -> Text,
+        id -> Int4,
+        #[max_length = 50]
+        name -> Varchar,
         start -> Date,
         end -> Date,
     }
@@ -11,14 +12,15 @@ diesel::table! {
 
 diesel::table! {
     task (id) {
-        id -> Integer,
-        name -> Text,
-        sprint -> Integer,
-        ordinal -> SmallInt,
-        developer -> Integer,
-        sp -> Double,
-        tester -> Nullable<Integer>,
-        test_sp -> Nullable<Double>,
+        id -> Int4,
+        #[max_length = 50]
+        name -> Varchar,
+        sprint -> Int4,
+        ordinal -> Int2,
+        developer -> Int4,
+        sp -> Numeric,
+        tester -> Nullable<Int4>,
+        test_sp -> Nullable<Numeric>,
         start -> Nullable<Timestamp>,
         end -> Nullable<Timestamp>,
         test_start -> Nullable<Timestamp>,
@@ -28,9 +30,11 @@ diesel::table! {
 
 diesel::table! {
     user (id) {
-        id -> Integer,
-        name -> Text,
-        role -> Text,
+        id -> Int4,
+        #[max_length = 50]
+        name -> Varchar,
+        #[max_length = 4]
+        role -> Varchar,
     }
 }
 

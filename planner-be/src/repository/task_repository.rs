@@ -1,24 +1,23 @@
 use diesel::r2d2::{ConnectionManager, Pool};
 use diesel::result::Error;
 use diesel::{
-    insert_into, Connection, ExpressionMethods, QueryDsl, QueryResult, RunQueryDsl,
-    SqliteConnection,
+    insert_into, Connection, ExpressionMethods, PgConnection, QueryDsl, QueryResult, RunQueryDsl,
 };
 
 use crate::model::entity::Task;
-use crate::model::param::{AddTaskParam, TaskListParam};
+use crate::model::param::TaskListParam;
 use crate::{schema::task::dsl::task, schema::task::*};
 
 pub(crate) struct TaskRepository {
-    pool: Pool<ConnectionManager<SqliteConnection>>,
+    pool: Pool<ConnectionManager<PgConnection>>,
 }
 
 impl TaskRepository {
-    pub(crate) fn new(pool: Pool<ConnectionManager<SqliteConnection>>) -> Self {
+    pub(crate) fn new(pool: Pool<ConnectionManager<PgConnection>>) -> Self {
         Self { pool }
     }
 
-    pub(crate) fn insert(&self, param: &AddTaskParam) -> QueryResult<i32> {
+    pub(crate) fn insert(&self, param: &Task) -> QueryResult<i32> {
         self.pool.get().unwrap().transaction::<_, Error, _>(|conn| {
             insert_into(task).values(param).execute(conn)?;
             task.select(id).order_by(id.desc()).first(conn)

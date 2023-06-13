@@ -27,7 +27,7 @@ impl TaskService {
         }
     }
 
-    pub(crate) fn add(&self, payload: &mut AddTaskParam) -> i32 {
+    pub(crate) fn add(&self, mut payload: AddTaskParam) -> i32 {
         let ordinal = self
             .task_repository
             .get_list(&TaskListParam {
@@ -40,7 +40,7 @@ impl TaskService {
             .map(|e| e.ordinal)
             .unwrap_or(0);
         payload.ordinal = ordinal + 1;
-        self.task_repository.insert(payload).unwrap()
+        self.task_repository.insert(&payload.into()).unwrap()
     }
 
     pub(crate) fn edit(&self, payload: &Task) -> usize {
@@ -93,18 +93,16 @@ impl TaskService {
                 id: e.id,
                 name: e.name,
                 sprint: e.sprint,
-                sprint_name: sprints.get(&e.sprint).unwrap().to_string(),
+                sprint_name: sprints.get(&e.sprint).map(|e| e.to_string()),
                 ordinal: e.ordinal,
                 developer: e.developer,
-                developer_name: users
-                    .get(&e.developer)
-                    .map_or("".to_string(), |e| e.to_string()),
-                sp: e.sp,
+                developer_name: users.get(&e.developer).map(|e| e.to_string()),
+                sp: e.sp.to_string(),
                 tester: e.tester,
                 tester_name: e
                     .tester
                     .map_or(None, |e| users.get(&e).map(|e| e.to_string())),
-                test_sp: e.test_sp,
+                test_sp: e.test_sp.map(|e| e.to_string()),
                 start: e.start,
                 end: e.end,
                 test_start: e.test_start,

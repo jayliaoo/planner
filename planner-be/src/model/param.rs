@@ -1,7 +1,8 @@
 use diesel::Insertable;
 use serde::Deserialize;
+use time::{Date, PrimitiveDateTime};
 
-use crate::schema::{sprint, task, user};
+use crate::schema::{sprint, user};
 
 #[derive(Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -39,18 +40,33 @@ pub(crate) struct TaskListParam {
 #[diesel(table_name = sprint)]
 pub(crate) struct AddSprintParam {
     pub(crate) name: String,
-    pub(crate) start: String,
-    pub(crate) end: String,
+    pub(crate) start: Date,
+    pub(crate) end: Date,
 }
 
-#[derive(Deserialize, Debug, Insertable)]
-#[diesel(table_name = task)]
+#[derive(Deserialize, Debug)]
 pub(crate) struct AddTaskParam {
     pub(crate) name: String,
     pub(crate) sprint: i32,
     pub(crate) ordinal: i16,
     pub(crate) developer: i32,
-    pub(crate) sp: f64,
+    pub(crate) sp: String,
     pub(crate) tester: Option<i32>,
-    pub(crate) test_sp: Option<f64>,
+    pub(crate) test_sp: Option<String>,
+}
+
+#[derive(Deserialize, Debug)]
+pub(crate) struct EditTaskParam {
+    pub(crate) id: i32,
+    pub(crate) name: String,
+    pub(crate) sprint: i32,
+    pub(crate) ordinal: i16,
+    pub(crate) developer: i32,
+    pub(crate) sp: String,
+    pub(crate) tester: Option<i32>,
+    pub(crate) test_sp: Option<String>,
+    pub(crate) start: Option<PrimitiveDateTime>,
+    pub(crate) end: Option<PrimitiveDateTime>,
+    pub(crate) test_start: Option<PrimitiveDateTime>,
+    pub(crate) test_end: Option<PrimitiveDateTime>,
 }

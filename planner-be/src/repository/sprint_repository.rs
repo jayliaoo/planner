@@ -1,8 +1,7 @@
 use diesel::r2d2::{ConnectionManager, Pool};
 use diesel::result::Error;
 use diesel::{
-    insert_into, Connection, ExpressionMethods, QueryDsl, QueryResult, RunQueryDsl,
-    SqliteConnection,
+    insert_into, Connection, ExpressionMethods, PgConnection, QueryDsl, QueryResult, RunQueryDsl,
 };
 
 use crate::model::entity::Sprint;
@@ -10,11 +9,11 @@ use crate::model::param::{AddSprintParam, SprintListParam};
 use crate::{schema::sprint::dsl::sprint, schema::sprint::*};
 
 pub(crate) struct SprintRepository {
-    pool: Pool<ConnectionManager<SqliteConnection>>,
+    pool: Pool<ConnectionManager<PgConnection>>,
 }
 
 impl SprintRepository {
-    pub(crate) fn new(pool: Pool<ConnectionManager<SqliteConnection>>) -> Self {
+    pub(crate) fn new(pool: Pool<ConnectionManager<PgConnection>>) -> Self {
         Self { pool }
     }
 

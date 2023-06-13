@@ -1,20 +1,20 @@
-use diesel::{Connection, ExpressionMethods, insert_into, QueryDsl, QueryResult, RunQueryDsl, SqliteConnection};
 use diesel::r2d2::{ConnectionManager, Pool};
 use diesel::result::Error;
+use diesel::{
+    insert_into, Connection, ExpressionMethods, PgConnection, QueryDsl, QueryResult, RunQueryDsl,
+};
 
-use crate::{schema::user::*, schema::user::dsl::user};
 use crate::model::entity::User;
 use crate::model::param::{AddUserParam, UserListParam};
+use crate::{schema::user::dsl::user, schema::user::*};
 
 pub(crate) struct UserRepository {
-    pool: Pool<ConnectionManager<SqliteConnection>>,
+    pool: Pool<ConnectionManager<PgConnection>>,
 }
 
 impl<'a> UserRepository {
-    pub(crate) fn new(pool: Pool<ConnectionManager<SqliteConnection>>) -> Self {
-        Self {
-            pool
-        }
+    pub(crate) fn new(pool: Pool<ConnectionManager<PgConnection>>) -> Self {
+        Self { pool }
     }
 
     pub(crate) fn insert(&self, param: &AddUserParam) -> QueryResult<i32> {
@@ -25,15 +25,20 @@ impl<'a> UserRepository {
     }
 
     pub(crate) fn update(&self, param: &User) -> QueryResult<usize> {
-        diesel::update(param).set(param).execute(&mut self.pool.get().unwrap())
+        diesel::update(param)
+            .set(param)
+            .execute(&mut self.pool.get().unwrap())
     }
 
     pub(crate) fn delete(&self, id_: i32) -> QueryResult<usize> {
-        diesel::delete(user).filter(id.eq(id_)).execute(&mut self.pool.get().unwrap())
+        diesel::delete(user)
+            .filter(id.eq(id_))
+            .execute(&mut self.pool.get().unwrap())
     }
 
     pub(crate) fn get(&self, id_: i32) -> QueryResult<User> {
-        user.filter(id.eq(id_)).get_result(&mut self.pool.get().unwrap())
+        user.filter(id.eq(id_))
+            .get_result(&mut self.pool.get().unwrap())
     }
 
     pub(crate) fn get_list(&self, param: &UserListParam) -> QueryResult<Vec<User>> {

@@ -3,25 +3,24 @@ use std::sync::Arc;
 use axum::extract::{Path, Query, State};
 use axum::Json;
 
-use crate::model::entity::Task;
-use crate::model::param::{AddTaskParam, TaskListParam};
+use crate::model::param::{AddTaskParam, EditTaskParam, TaskListParam};
 use crate::model::vo::TaskVo;
 use crate::model::MyResult;
 use crate::service::task_service::TaskService;
 
 pub(crate) async fn add(
     State(service): State<Arc<TaskService>>,
-    Json(mut payload): Json<AddTaskParam>,
+    Json(payload): Json<AddTaskParam>,
 ) -> Json<MyResult<i32>> {
-    let id = service.add(&mut payload);
+    let id = service.add(payload);
     Json(MyResult::success(Some(id)))
 }
 
 pub(crate) async fn edit(
     State(service): State<Arc<TaskService>>,
-    Json(payload): Json<Task>,
+    Json(payload): Json<EditTaskParam>,
 ) -> Json<MyResult<()>> {
-    service.edit(&payload);
+    service.edit(&payload.into());
     Json(MyResult::success(None))
 }
 
@@ -36,9 +35,9 @@ pub(crate) async fn delete(
 pub(crate) async fn get(
     State(service): State<Arc<TaskService>>,
     Path(id): Path<i32>,
-) -> Json<MyResult<Task>> {
+) -> Json<MyResult<TaskVo>> {
     let task = service.get(id);
-    Json(MyResult::success(Some(task)))
+    Json(MyResult::success(Some(task.into())))
 }
 
 pub(crate) async fn get_list(
