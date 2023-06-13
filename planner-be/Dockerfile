@@ -18,6 +18,7 @@ COPY --from=cacher /app/target target
 COPY --from=cacher $CARGO_HOME $CARGO_HOME
 RUN  cargo build --release -- -C prefer-static
 
-FROM --platform=linux/amd64 gcr.io/distroless/cc
+FROM --platform=linux/amd64 alpine:3.18
+RUN apk add --update libpq
 COPY --from=builder /app/target/release/planner-be /
 CMD ["./planner-be"]
