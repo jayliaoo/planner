@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  urlPrefix: 'http://localhost:2345/',
+  urlPrefix: 'http://localhost:3500/',
 };
 
 /*

@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {UntypedFormBuilder, UntypedFormGroup, Validators} from '@angular/forms';
 import {HttpClient} from "@angular/common/http";
 import {environment} from "../../environments/environment";
-import {Result} from "../common";
+import {Result,format} from "../common";
 
 @Component({
   selector: 'app-sprint-add',
@@ -21,8 +21,8 @@ export class SprintAddComponent implements OnInit {
         return
       }
       let value = this.validateForm.value;
-      (value['start'] as Date).setUTCHours(0, 0, 0, 0);
-      (value['end'] as Date).setUTCHours(0, 0, 0, 0);
+      value['start']= format(value['start'] as Date)
+      value['end']= format(value['end'] as Date)
       this.http.post<Result<any>>(environment.urlPrefix + "sprint", value, {
         headers: {'Authorization': 'Bearer ' + token}
       }).subscribe(result => {
