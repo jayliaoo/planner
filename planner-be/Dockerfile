@@ -16,7 +16,7 @@ COPY . .
 # Copy over the cached dependencies
 COPY --from=cacher /app/target target
 COPY --from=cacher $CARGO_HOME $CARGO_HOME
-RUN  cargo build --release -C prefer-static
+RUN  cargo build --release -- -C prefer-static
 
 FROM --platform=linux/amd64 gcr.io/distroless/cc
 COPY --from=builder /app/target/release/planner-be /
