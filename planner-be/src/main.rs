@@ -48,6 +48,7 @@ async fn main() {
             "http://localhost:4200",
         )
         .unwrap()]));
+
     let app = Router::new()
         .route("/login", post(user_handler::login).with_state(jwt_arc))
         .route("/index", get(|| async { Html("Hello World!") }))
