@@ -11,8 +11,8 @@ RUN cargo chef cook --release --recipe-path recipe.json
 COPY . .
 RUN cargo build --release
 
-FROM debian:buster-slim AS runtime
-RUN apt update && apt install -y libpq-dev && apt install -y libc6=2.29
+FROM debian:bullseye-slim AS runtime
+RUN apt update && apt install -y libpq-dev && apt install -y libc6-dev
 WORKDIR /app
 COPY --from=builder /app/target/release/planner-be /usr/local/bin
 ENTRYPOINT ["/usr/local/bin/planner-be"]
