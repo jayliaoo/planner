@@ -2,6 +2,7 @@ FROM --platform=linux/amd64 lukemathwalker/cargo-chef:latest-rust-alpine3.18 as 
 WORKDIR /app
 
 FROM chef AS planner
+RUN apk add --update libpq
 COPY . .
 RUN cargo chef prepare  --recipe-path recipe.json
 
