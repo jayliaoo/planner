@@ -1,4 +1,4 @@
-FROM lukemathwalker/cargo-chef:latest AS chef
+FROM --platform=linux/amd64 lukemathwalker/cargo-chef:latest AS chef
 WORKDIR /app
 
 FROM chef AS planner
@@ -11,7 +11,7 @@ RUN cargo chef cook --release --recipe-path recipe.json
 COPY . .
 RUN cargo build --release
 
-FROM debian:buster-slim AS runtime
+FROM --platform=linux/amd64 debian:buster-slim AS runtime
 WORKDIR /app
 COPY --from=builder /app/target/release/planner-be /usr/local/bin
 ENTRYPOINT ["/usr/local/bin/planner-be"]
