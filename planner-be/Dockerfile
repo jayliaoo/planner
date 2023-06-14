@@ -12,7 +12,7 @@ COPY . .
 RUN cargo build --release
 
 FROM --platform=linux/amd64 debian:buster-slim AS runtime
-RUN sudo apt update && sudo apt install libpq-dev
+RUN apt update && apt install -y libpq-dev
 WORKDIR /app
 COPY --from=builder /app/target/release/planner-be /usr/local/bin
 ENTRYPOINT ["/usr/local/bin/planner-be"]
