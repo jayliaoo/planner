@@ -6,7 +6,7 @@ pub(crate) mod task_repository;
 pub(crate) mod user_repository;
 
 pub(crate) fn get_connection_pool() -> Pool<ConnectionManager<PgConnection>> {
-    let database_url = "postgres://jayliao:password@localhost/planner";
+    let database_url = "postgres://citus:U8prCDk!ks2cr4p@c-default.wt2pbdaaozel2d.postgres.cosmos.azure.com:5432/default?sslmode=require";
 
     let manager = ConnectionManager::<PgConnection>::new(database_url);
     Pool::builder()
