@@ -16,4 +16,5 @@ FROM --platform=linux/amd64 alpine AS runtime
 RUN apk --update add libpq-dev libc6-compat
 WORKDIR /app
 COPY --from=builder /app/target/release/planner-be /usr/local/bin
+EXPOSE 3500
 ENTRYPOINT ["/usr/local/bin/planner-be"]
