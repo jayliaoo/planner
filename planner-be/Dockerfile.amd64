@@ -1,20 +1,20 @@
-FROM --platform=linux/amd64 lukemathwalker/cargo-chef:latest-rust-alpine AS chef
+FROM --platform=linux/amd64 clux/muslrust:stable AS chef
+USER root
+RUN cargo install cargo-chef
 WORKDIR /app
 
-FROM --platform=linux/amd64 chef AS planner
+FROM chef AS planner
 COPY . .
 RUN cargo chef prepare --recipe-path recipe.json
 
-FROM --platform=linux/amd64 chef AS builder
+FROM chef AS builder
 COPY --from=planner /app/recipe.json recipe.json
-RUN cargo chef cook --release --recipe-path recipe.json
+RUN cargo chef cook --release --target x86_64-unknown-linux-musl --recipe-path recipe.json
 COPY . .
-RUN apk --update add libpq-dev libc6-compat
-RUN cargo build --release
+RUN cargo build --release --target x86_64-unknown-linux-musl
 
 FROM --platform=linux/amd64 alpine AS runtime
-RUN apk --update add libpq-dev libc6-compat
-WORKDIR /app
-COPY --from=builder /app/target/release/planner-be /usr/local/bin
-EXPOSE 3500
-ENTRYPOINT ["/usr/local/bin/planner-be"]
+RUN addgroup -S myuser && adduser -S myuser -G myuser
+COPY --from=builder /app/target/x86_64-unknown-linux-musl/release/planner-be /usr/local/bin/
+USER myuser
+CMD ["/usr/local/bin/planner-be"]
