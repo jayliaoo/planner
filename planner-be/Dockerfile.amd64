@@ -1,11 +1,11 @@
 FROM --platform=linux/amd64 lukemathwalker/cargo-chef:latest-rust-alpine AS chef
 WORKDIR /app
 
-FROM chef AS planner
+FROM --platform=linux/amd64 chef AS planner
 COPY . .
 RUN cargo chef prepare --recipe-path recipe.json
 
-FROM chef AS builder
+FROM --platform=linux/amd64 chef AS builder
 COPY --from=planner /app/recipe.json recipe.json
 RUN cargo chef cook --release --recipe-path recipe.json
 COPY . .
