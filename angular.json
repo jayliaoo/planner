@@ -38,6 +38,15 @@
           },
           "configurations": {
             "production": {
+              "index": {
+                "input": "src/index.prod.html"
+              },
+              "fileReplacements": [
+                {
+                  "src": "src/environments/environment.ts",
+                  "replaceWith": "src/environments/environment.prod.ts"
+                }
+              ],
               "budgets": [
                 {
                   "type": "initial",
