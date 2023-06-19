@@ -9,8 +9,7 @@ import {
   UntypedFormBuilder,
   UntypedFormGroup,
 } from '@angular/forms'
-import { NzSelectOptionInterface } from 'ng-zorro-antd/select/select.types'
-import { ActivatedRoute } from '@angular/router'
+import { ActivatedRoute, Router } from '@angular/router'
 import { Sprint } from '../sprints/sprints.component'
 
 interface Task {
@@ -41,13 +40,13 @@ export class SprintDetailComponent implements OnInit {
   editCache: { [key: string]: { edit: boolean, data: Task } } = {}
   listOfData: Task[] = []
 
-  constructor(private fb: UntypedFormBuilder, private http: HttpClient, private route: ActivatedRoute) {
+  constructor(private fb: UntypedFormBuilder, private http: HttpClient, private route: ActivatedRoute, private router: Router) {
   }
 
   loadTasks(): void {
     let token = localStorage.getItem('token')
     if (!token) {
-      location.replace('/login')
+      this.router.navigate(['/login'])
       return
     }
     this.http.get<Result<Task[]>>(environment.urlPrefix + 'task/list', {
